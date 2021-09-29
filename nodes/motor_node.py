@@ -8,7 +8,7 @@ import picar.common as picar_common
 from picar_msgs.msg import CarCmd
 from dynamic_reconfigure.server import Server
 from std_srvs.srv import Trigger, TriggerResponse
-from motor.cfg import motorConfig
+from picar_motor.cfg import motorConfig
 import Adafruit_PCA9685
 
 
