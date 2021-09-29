@@ -4,7 +4,7 @@ import os
 import yaml
 import rospy
 import rospkg
-import picar_common.picar_common as picar_common
+import picar.common as picar_common
 from picar_msgs.msg import CarCmd
 from dynamic_reconfigure.server import Server
 from std_srvs.srv import Trigger, TriggerResponse
@@ -24,12 +24,10 @@ class MotorController(object):
             address (int): I2C address of the PCA9685 PWM module.
         """
         # find config file
-        config_file_name = picar_common.get_param(
-            "~config_file_name",
-            "default")
+        config_file_name = picar_common.get_param("~config_file_name",
+                                                  "default")
         config_file_path = picar_common.get_config_file_path(
-            "motor",
-            config_file_name)
+            "motor", config_file_name)
 
         if config_file_path is None:
             rospy.signal_shutdown("Could not find motor config file. "
@@ -67,10 +65,8 @@ class MotorController(object):
                                             queue_size=1)
 
     def init_services(self):
-        self.services["save_config"] = rospy.Service(
-            "~save_config",
-            Trigger,
-            self.save_config)
+        self.services["save_config"] = rospy.Service("~save_config", Trigger,
+                                                     self.save_config)
 
     def car_cmd_callback(self, msg):
         self.msg_timeout = False
@@ -103,8 +99,8 @@ class MotorController(object):
         angle = max(angle, self.params.angle_min)
         angle = min(angle, self.params.angle_max)
 
-        pwm = int(float(self.params.servo_gain) * angle
-                  + self.params.servo_offset)
+        pwm = int(
+            float(self.params.servo_gain) * angle + self.params.servo_offset)
         self.set_servo_pwm(pwm)
 
     def set_throttle_pwm(self, pwm):
@@ -140,12 +136,8 @@ class MotorController(object):
     def save_config(self, request):
         response = TriggerResponse()
         name = rospy.get_namespace().strip("/")
-        path = os.path.join(
-            rospkg.RosPack().get_path("picar"),
-            "config",
-            "motor",
-            name + ".yaml"
-        )
+        path = os.path.join(rospkg.RosPack().get_path("picar"), "config",
+                            "motor", name + ".yaml")
         try:
             self.params.write_params_to_file(path)
         except IOError as error:
@@ -191,15 +183,12 @@ class MotorParams(object):
             self.write_params_to_server()
 
     def read_params_from_server(self):
-        self.servo_channel = rospy.get_param(
-            "~servo_channel",
-            self.servo_channel)
-        self.motor_forward_channel = rospy.get_param(
-            "~motor_forward_channel",
-            self.motor_forward_channel)
+        self.servo_channel = rospy.get_param("~servo_channel",
+                                             self.servo_channel)
+        self.motor_forward_channel = rospy.get_param("~motor_forward_channel",
+                                                     self.motor_forward_channel)
         self.motor_backward_channel = rospy.get_param(
-            "~motor_backward_channel",
-            self.motor_backward_channel)
+            "~motor_backward_channel", self.motor_backward_channel)
         self.in_1_channel = rospy.get_param("~in_1_channel", self.in_1_channel)
         self.in_2_channel = rospy.get_param("~in_2_channel", self.in_2_channel)
         self.angle_max = rospy.get_param("~angle_max", self.angle_max)
