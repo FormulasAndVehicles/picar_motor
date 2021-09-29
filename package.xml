@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>motor</name>
+  <name>picar_motor</name>
   <version>0.0.0</version>
   <description>This package is responsible for controlling the motors</description>
 
